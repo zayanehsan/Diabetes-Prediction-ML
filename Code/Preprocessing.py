@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
@@ -6,9 +7,9 @@ dataset_path = "Dataset/diabetes_012_health_indicators_BRFSS2015.csv.zip"
 df = pd.read_csv(dataset_path)
 df = df[df["Diabetes_012"] != 1].copy()
 df["Diabetes"] = df["Diabetes_012"].map({0: 0, 2: 1})
-df = df.drop(columns=["Diabetes_012"])
+df.drop(columns=["Diabetes_012"], inplace=True)
 duplicates_before = df.duplicated().sum()
-df = df.drop_duplicates()
+df.drop_duplicates(inplace=True)
 duplicates_after = df.duplicated().sum()
 print("Exact duplicate rows before removal:", duplicates_before)
 print("Exact duplicate rows after removal:", duplicates_after)
@@ -63,3 +64,30 @@ print("MentHlth range:", df["MentHlth"].min(), "to", df["MentHlth"].max())
 print("MentHlth values outside 0-30:", ((df["MentHlth"] < 0) | (df["MentHlth"] > 30)).sum())
 print("PhysHlth range:", df["PhysHlth"].min(), "to", df["PhysHlth"].max())
 print("PhysHlth values outside 0-30:", ((df["PhysHlth"] < 0) | (df["PhysHlth"] > 30)).sum())
+output_folder = "Processed_Data"
+os.makedirs(output_folder, exist_ok=True)
+X_train_resampled_df = pd.DataFrame(
+    X_train_resampled,
+    columns=X.columns
+)
+X_test_scaled_df = pd.DataFrame(
+    X_test_scaled,
+    columns=X.columns
+)
+X_train_resampled_df.to_csv(
+    os.path.join(output_folder, "X_train.csv"),
+    index=False
+)
+y_train_resampled.to_csv(
+    os.path.join(output_folder, "Y_train.csv"),
+    index=False
+)
+X_test_scaled_df.to_csv(
+    os.path.join(output_folder, "X_test.csv"),
+    index=False
+)
+y_test.to_csv(
+    os.path.join(output_folder, "Y_test.csv"),
+    index=False
+)
+print("Processed datasets saved successfully.")
