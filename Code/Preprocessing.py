@@ -91,3 +91,19 @@ y_test.to_csv(
     index=False
 )
 print("Processed datasets saved successfully.")
+X_train_original_df = pd.DataFrame(
+    X_train_scaled,
+    columns=X.columns
+)
+X_train_original_df.to_csv(
+    os.path.join(output_folder, "X_train_original.csv"),
+    index=False
+)
+y_train.to_csv(
+    os.path.join(output_folder, "Y_train_original.csv"),
+    index=False
+)
+print("Original training datasets saved successfully.")
+X_train.to_csv("Processed_Data/X_train_raw.csv", index=False)
+X_test.to_csv("Processed_Data/X_test_raw.csv", index=False)
+print("Raw training and testing features saved successfully.")
