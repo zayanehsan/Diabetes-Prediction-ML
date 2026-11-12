@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -13,10 +14,12 @@ from sklearn.metrics import (
     average_precision_score,
     confusion_matrix
 )
-X_train = pd.read_csv("Processed_Data/X_train_raw.csv")
-y_train = pd.read_csv("Processed_Data/Y_train_original.csv").squeeze()
-X_test = pd.read_csv("Processed_Data/X_test_raw.csv")
-y_test = pd.read_csv("Processed_Data/Y_test.csv").squeeze()
+project_folder = Path(__file__).resolve().parents[2]
+processed_folder = project_folder / "Processed_Data"
+X_train = pd.read_csv(processed_folder / "X_train_raw.csv")
+y_train = pd.read_csv(processed_folder / "Y_train_original.csv").squeeze()
+X_test = pd.read_csv(processed_folder / "X_test_raw.csv")
+y_test = pd.read_csv(processed_folder / "Y_test.csv").squeeze()
 pipeline = Pipeline([
     ("scaler", StandardScaler()),
     ("oversampler", RandomOverSampler(

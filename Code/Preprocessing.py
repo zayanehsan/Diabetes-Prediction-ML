@@ -1,12 +1,20 @@
 import pandas as pd
-import os
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
-dataset_path = "Dataset/diabetes_012_health_indicators_BRFSS2015.csv.zip"
+project_folder = Path(__file__).resolve().parent.parent
+dataset_path = (
+    project_folder
+    / "Dataset"
+    / "diabetes_012_health_indicators_BRFSS2015.csv.zip"
+)
 df = pd.read_csv(dataset_path)
 df = df[df["Diabetes_012"] != 1].copy()
-df["Diabetes"] = df["Diabetes_012"].map({0: 0, 2: 1})
+df["Diabetes"] = df["Diabetes_012"].map({
+    0: 0,
+    2: 1
+})
 df.drop(columns=["Diabetes_012"], inplace=True)
 duplicates_before = df.duplicated().sum()
 df.drop_duplicates(inplace=True)
@@ -17,7 +25,11 @@ print("Dataset shape after duplicate removal:", df.shape)
 print("Binary target prepared successfully")
 print("Dataset shape:", df.shape)
 class_counts = df["Diabetes"].value_counts().sort_index()
-class_percentages = df["Diabetes"].value_counts(normalize=True).sort_index() * 100
+class_percentages = (
+    df["Diabetes"]
+    .value_counts(normalize=True)
+    .sort_index() * 100
+)
 print("Class distribution:")
 print(class_counts)
 print("Class percentages:")
@@ -61,11 +73,17 @@ print(y_test.value_counts(normalize=True).sort_index() * 100)
 print("BMI range:", df["BMI"].min(), "to", df["BMI"].max())
 print("BMI values <= 0:", (df["BMI"] <= 0).sum())
 print("MentHlth range:", df["MentHlth"].min(), "to", df["MentHlth"].max())
-print("MentHlth values outside 0-30:", ((df["MentHlth"] < 0) | (df["MentHlth"] > 30)).sum())
+print(
+    "MentHlth values outside 0-30:",
+    ((df["MentHlth"] < 0) | (df["MentHlth"] > 30)).sum()
+)
 print("PhysHlth range:", df["PhysHlth"].min(), "to", df["PhysHlth"].max())
-print("PhysHlth values outside 0-30:", ((df["PhysHlth"] < 0) | (df["PhysHlth"] > 30)).sum())
-output_folder = "Processed_Data"
-os.makedirs(output_folder, exist_ok=True)
+print(
+    "PhysHlth values outside 0-30:",
+    ((df["PhysHlth"] < 0) | (df["PhysHlth"] > 30)).sum()
+)
+output_folder = project_folder / "Processed_Data"
+output_folder.mkdir(parents=True, exist_ok=True)
 X_train_resampled_df = pd.DataFrame(
     X_train_resampled,
     columns=X.columns
@@ -75,19 +93,19 @@ X_test_scaled_df = pd.DataFrame(
     columns=X.columns
 )
 X_train_resampled_df.to_csv(
-    os.path.join(output_folder, "X_train.csv"),
+    output_folder / "X_train.csv",
     index=False
 )
 y_train_resampled.to_csv(
-    os.path.join(output_folder, "Y_train.csv"),
+    output_folder / "Y_train.csv",
     index=False
 )
 X_test_scaled_df.to_csv(
-    os.path.join(output_folder, "X_test.csv"),
+    output_folder / "X_test.csv",
     index=False
 )
 y_test.to_csv(
-    os.path.join(output_folder, "Y_test.csv"),
+    output_folder / "Y_test.csv",
     index=False
 )
 print("Processed datasets saved successfully.")
@@ -96,14 +114,20 @@ X_train_original_df = pd.DataFrame(
     columns=X.columns
 )
 X_train_original_df.to_csv(
-    os.path.join(output_folder, "X_train_original.csv"),
+    output_folder / "X_train_original.csv",
     index=False
 )
 y_train.to_csv(
-    os.path.join(output_folder, "Y_train_original.csv"),
+    output_folder / "Y_train_original.csv",
     index=False
 )
 print("Original training datasets saved successfully.")
-X_train.to_csv("Processed_Data/X_train_raw.csv", index=False)
-X_test.to_csv("Processed_Data/X_test_raw.csv", index=False)
+X_train.to_csv(
+    output_folder / "X_train_raw.csv",
+    index=False
+)
+X_test.to_csv(
+    output_folder / "X_test_raw.csv",
+    index=False
+)
 print("Raw training and testing features saved successfully.")

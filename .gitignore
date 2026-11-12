@@ -2,3 +2,7 @@
 __pycache__/
 *.pyc
 .vscode/
+.ipynb_checkpoints/
+*.log
+.DS_Store
+Thumbs.db

@@ -1,8 +1,18 @@
-import pandas as pd
 import os
-os.makedirs("Results", exist_ok=True)
-original_df = pd.read_csv("Results/model_metrics.csv")
-tuned_df = pd.read_csv("Results/tuning_results.csv")
+import pandas as pd
+project_folder = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))
+    )
+)
+results_folder = os.path.join(project_folder, "Results")
+os.makedirs(results_folder, exist_ok=True)
+original_df = pd.read_csv(
+    os.path.join(results_folder, "model_metrics.csv")
+)
+tuned_df = pd.read_csv(
+    os.path.join(results_folder, "tuning_results.csv")
+)
 print("Original Model Results:")
 print(original_df[["Model", "F1_Score"]])
 print("\nTuned Model Results:")
@@ -42,7 +52,10 @@ print(
     .round(5)
     .to_string(index=False)
 )
-output_path = "Results/final_model_comparison.csv"
+output_path = os.path.join(
+    results_folder,
+    "final_model_comparison.csv"
+)
 comparison_df.to_csv(output_path, index=False)
 print("\nFinal model comparison saved successfully!")
 print("Saved at:", output_path)

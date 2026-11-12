@@ -1,6 +1,12 @@
 import pandas as pd
 import os
-os.makedirs("Results", exist_ok=True)
+project_folder = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))
+    )
+)
+results_folder = os.path.join(project_folder, "Results")
+os.makedirs(results_folder, exist_ok=True)
 results = [
     {
         "Model": "Logistic Regression",
@@ -89,7 +95,10 @@ results = [
 ]
 df = pd.DataFrame(results)
 df["Specificity"] = df["TN"] / (df["TN"] + df["FP"])
-output_path = "Results/tuning_results.csv"
+output_path = os.path.join(
+    results_folder,
+    "tuning_results.csv"
+)
 df.to_csv(output_path, index=False)
 print("Tuning results saved successfully!")
 print("\nTuning Results:")

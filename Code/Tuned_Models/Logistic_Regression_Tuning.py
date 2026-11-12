@@ -1,6 +1,6 @@
 import pandas as pd
-from sklearn.pipeline import Pipeline
-from imblearn.pipeline import Pipeline as ImbPipeline
+from pathlib import Path
+from imblearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
 from sklearn.linear_model import LogisticRegression
@@ -14,11 +14,13 @@ from sklearn.metrics import (
     average_precision_score,
     confusion_matrix
 )
-X_train = pd.read_csv("Processed_Data/X_train_raw.csv")
-y_train = pd.read_csv("Processed_Data/Y_train_original.csv").squeeze()
-X_test = pd.read_csv("Processed_Data/X_test_raw.csv")
-y_test = pd.read_csv("Processed_Data/Y_test.csv").squeeze()
-pipeline = ImbPipeline([
+project_folder = Path(__file__).resolve().parents[2]
+processed_folder = project_folder / "Processed_Data"
+X_train = pd.read_csv(processed_folder / "X_train_raw.csv")
+y_train = pd.read_csv(processed_folder / "Y_train_original.csv").squeeze()
+X_test = pd.read_csv(processed_folder / "X_test_raw.csv")
+y_test = pd.read_csv(processed_folder / "Y_test.csv").squeeze()
+pipeline = Pipeline([
     ("scaler", StandardScaler()),
     ("oversampler", RandomOverSampler(
         sampling_strategy=0.36,
